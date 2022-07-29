@@ -1,32 +1,76 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+	<div id="app" class="container is-fluid">
+	
+			<b-navbar>
+				<template #brand>
+					<b-navbar-item tag="router-link" :to="{ path: '/' }">
+						<!-- <img src="/logo.png" alt="admin-panel logo"> -->
+					</b-navbar-item>
+				</template>
+
+				<template #start v-if="isAuth()">
+					<b-navbar-item tag="router-link" :to="{ path: '/' }">Home</b-navbar-item>
+					<b-navbar-item tag="router-link" :to="{ path: '/settings' }">Настройки</b-navbar-item>
+				</template>
+
+				<template #end>
+					<b-navbar-item tag="div">
+						<div class="buttons">
+							<template v-if="isAuth()">
+								<b-button
+									@click="logout"
+									type="is-light">
+									LogOut
+								</b-button>
+							</template>
+
+							<template v-if="!isAuth()">
+								<b-button tag="router-link"
+									to="/login"
+									type="is-light">
+									LogIn
+								</b-button>
+							</template>
+						</div>
+					</b-navbar-item>
+				</template>
+			</b-navbar>
+
+		<div>
+			<router-view></router-view>
+		</div>
+
+	</div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import auth from '@/auth'
+import {tools} from '@/mixins/tools'
 
-#nav {
-  padding: 30px;
-}
+export default {
+	mixins: [tools],
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+	data () {
+		return {
+			isCollapsible: true,
+		}
+	},
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+	methods: {
+		logout () {
+			auth.logout(this)
+		},
+
+		isAuth () {
+			return auth.isAuthenticated()
+		},
+
+	},
+
+	computed: {},
+	created () {},
+
 }
-</style>
+</script>
+
+<style></style>
